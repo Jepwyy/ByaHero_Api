@@ -15,7 +15,7 @@ const usersSchema = new Schema(
     password: {
       type: String,
       required: [true, 'Please enter a password'],
-      min: 10,
+      min: 8,
     },
   },
   { timestamps: true }

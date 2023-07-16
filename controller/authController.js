@@ -58,7 +58,8 @@ const login = async (req, res) => {
       req.session.user = user
       res.status(200).json({
         message: 'Login Successfull',
-        user: req.session.user,
+
+        user: user,
       })
     }
   } catch (err) {
@@ -67,4 +68,16 @@ const login = async (req, res) => {
   }
 }
 
-module.exports = { register, login }
+const logout = async (req, res) => {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(400).json({ message: 'unable to logout' })
+      } else {
+        res.status(200).json({ message: 'logout successfully' })
+      }
+    })
+  }
+}
+
+module.exports = { register, login, logout }
