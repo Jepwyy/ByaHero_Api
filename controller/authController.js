@@ -80,4 +80,11 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { register, login, logout }
+const cookie = async (req, res) => {
+  if (req.session.user) {
+    res.json({ loggedIn: true, user: req.session.user })
+  } else {
+    res.json({ loggedIn: false })
+  }
+}
+module.exports = { register, login, logout, cookie }

@@ -4,6 +4,7 @@ const userController = require('../controller/authController')
 
 router.post('/register', userController.register)
 router.post('/login', userController.login)
-router.post('/logout', userController.logout)
+router.delete('/logout', userController.logout)
+router.get('/cookie', userController.cookie)
 
 module.exports = router
