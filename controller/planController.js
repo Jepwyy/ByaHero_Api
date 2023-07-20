@@ -72,4 +72,27 @@ const viewPlan = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching data.' })
   }
 }
-module.exports = { createPlan, viewPlan }
+
+const deletePlan = async (req, res) => {
+  const planId = req.params.id
+
+  try {
+    if (!planId) {
+      return res.status(400).json({ message: 'No Id Found!' })
+    }
+    const deletePlan = await Plan.findByIdAndDelete({ _id: planId })
+
+    if (!deletePlan) {
+      return res.status(400).json({ message: 'Item not found.' })
+    } else {
+      res
+        .status(200)
+        .json({ message: 'Item deleted successfully.', deletePlan })
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: 'An error occurred while deleting the item.' })
+  }
+}
+module.exports = { createPlan, viewPlan, deletePlan }
