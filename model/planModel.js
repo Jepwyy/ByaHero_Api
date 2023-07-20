@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const usersSchema = new Schema(
+const planSchema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,24 +25,28 @@ const usersSchema = new Schema(
       required: [true, 'Please enter a Destination'],
     },
     distance: {
-      type: String,
+      type: Number,
       required: [true, 'Please enter a Distance'],
     },
     companion: {
-      type: String,
+      type: Array,
       default: 'none',
     },
     thingsToBring: {
-      type: String,
+      type: Array,
       default: 'none',
     },
     notes: {
       type: String,
       default: 'none',
     },
+    status: {
+      type: String,
+      default: 'Pending',
+    },
   },
   { timestamps: true }
 )
-const Users = mongoose.model('users', usersSchema)
+const Plan = mongoose.model('plan', planSchema)
 
-module.exports = Users
+module.exports = Plan
