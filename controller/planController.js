@@ -45,7 +45,7 @@ const createPlan = async (req, res) => {
     // Save user to database
 
     await newPlan.save()
-    res.status(200).json({ message: 'Created successfully' })
+    res.status(200).json({ message: 'Created successfully', newPlan })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Creation failed' })
@@ -59,6 +59,33 @@ const viewPlan = async (req, res) => {
     }
 
     const planDetails = await Plan.find({
+      userId: req.session.user._id,
+    })
+
+    if (!planDetails) {
+      return res.status(400).json({ message: 'No Items Found.' })
+    } else {
+      res.status(200).json(planDetails)
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'An error occurred while fetching data.' })
+  }
+}
+
+const viewPlanOnly = async (req, res) => {
+  const planId = req.params.id
+  try {
+    if (!planId) {
+      return res.status(400).json({ message: 'No Id Found!' })
+    }
+
+    if (!req.session.user) {
+      return res.status(400).json({ message: 'Sign in First' })
+    }
+
+    const planDetails = await Plan.find({
+      _id: planId,
       userId: req.session.user._id,
     })
 
@@ -165,4 +192,11 @@ const updateStatus = async (req, res) => {
       .json({ error: 'An error occurred while updating the status.' })
   }
 }
-module.exports = { createPlan, viewPlan, deletePlan, updatePlan, updateStatus }
+module.exports = {
+  createPlan,
+  viewPlan,
+  deletePlan,
+  updatePlan,
+  updateStatus,
+  viewPlanOnly,
+}
