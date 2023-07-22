@@ -16,10 +16,6 @@ const planSchema = new Schema(
       type: Date,
       required: [true, 'Please enter a Departure Time'],
     },
-    arrivalDate: {
-      type: Date,
-      required: [true, 'Please enter a Arrival Time'],
-    },
     destination: {
       type: String,
       required: [true, 'Please enter a Destination'],

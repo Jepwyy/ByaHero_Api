@@ -4,7 +4,6 @@ const createPlan = async (req, res) => {
   const {
     title,
     departureDate,
-    arrivalDate,
     destination,
     distance,
     companion,
@@ -14,7 +13,7 @@ const createPlan = async (req, res) => {
   } = req.body
 
   try {
-    if (!title || !departureDate || !arrivalDate || !destination || !distance) {
+    if (!title || !departureDate || !destination || !distance) {
       return res
         .status(400)
         .json({ message: 'Please Enter All Required Fields!' })
@@ -33,7 +32,6 @@ const createPlan = async (req, res) => {
       userId: req.session.user._id,
       title,
       departureDate,
-      arrivalDate,
       destination,
       distance,
       companion,
@@ -126,7 +124,6 @@ const updatePlan = async (req, res) => {
   const {
     title,
     departureDate,
-    arrivalDate,
     destination,
     distance,
     companion,
@@ -145,7 +142,6 @@ const updatePlan = async (req, res) => {
       {
         title,
         departureDate,
-        arrivalDate,
         destination,
         distance,
         companion,
