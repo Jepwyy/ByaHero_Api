@@ -174,7 +174,7 @@ const updateStatus = async (req, res) => {
     const updatePlan = await Plan.findOneAndUpdate(
       { _id: planId },
       {
-        status,
+        status: 'finished',
       }
     )
     if (!updatePlan) {
