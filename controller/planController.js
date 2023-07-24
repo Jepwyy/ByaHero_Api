@@ -163,7 +163,6 @@ const updatePlan = async (req, res) => {
   }
 }
 const updateStatus = async (req, res) => {
-  const { status } = req.body
   const planId = req.params.id
 
   try {
