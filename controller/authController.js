@@ -55,11 +55,16 @@ const login = async (req, res) => {
     if (!match) {
       return res.status(400).json({ message: 'Email or password is incorrect' })
     } else {
-      req.session.user = user
-      res.status(200).json({
-        message: 'Login Successfull',
+      // Set session data
+      req.session.user = {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+      }
 
-        user: user,
+      res.status(200).json({
+        message: 'Login Successful',
+        user: req.session.user,
       })
     }
   } catch (err) {
@@ -69,23 +74,26 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-  if (req.session && Object.keys(req.session).length > 0) {
-    req.session = null
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err)
+      }
 
-    // Remove the session cookie from the client's browser
-    res.clearCookie('session') // Make sure to replace 'session' with the name of your session cookie
-
-    res.status(200).json({ message: 'logout successfully' })
+      res.clearCookie('session')
+      res.status(200).json({ message: 'Logout successfully' })
+    })
   } else {
-    res.status(400).json({ message: 'already logout' })
+    res.status(400).json({ message: 'Already logged out' })
   }
 }
 
 const cookie = async (req, res) => {
-  if (req.session && Object.keys(req.session).length > 0) {
+  if (req.session && req.session.user) {
     res.json({ loggedIn: true, user: req.session.user })
   } else {
     res.json({ loggedIn: false })
   }
 }
+
 module.exports = { register, login, logout, cookie }
