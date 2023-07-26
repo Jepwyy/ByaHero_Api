@@ -1,6 +1,7 @@
 const Plan = require('../model/planModel')
 
 const createPlan = async (req, res) => {
+  const UserId = req.params.user
   const {
     title,
     departureDate,
@@ -19,7 +20,7 @@ const createPlan = async (req, res) => {
         .json({ message: 'Please Enter All Required Fields!' })
     }
 
-    if (!req.session.user) {
+    if (!UserId) {
       return res.status(400).json({ message: 'Sign in First' })
     }
 
@@ -29,7 +30,7 @@ const createPlan = async (req, res) => {
     }
 
     const newPlan = new Plan({
-      userId: req.session.user._id,
+      userId: UserId,
       title,
       departureDate,
       destination,
@@ -51,13 +52,14 @@ const createPlan = async (req, res) => {
 }
 
 const viewPlan = async (req, res) => {
+  const UserId = req.params.user
   try {
-    if (!req.session.user) {
+    if (!UserId) {
       return res.status(400).json({ message: 'Sign in First' })
     }
 
     const planDetails = await Plan.find({
-      userId: req.session.user._id,
+      userId: UserId,
     })
 
     if (!planDetails) {
@@ -73,18 +75,19 @@ const viewPlan = async (req, res) => {
 
 const viewPlanOnly = async (req, res) => {
   const planId = req.params.id
+  const UserId = req.params.user
   try {
     if (!planId) {
       return res.status(400).json({ message: 'No Id Found!' })
     }
 
-    if (!req.session.user) {
+    if (!UserId) {
       return res.status(400).json({ message: 'Sign in First' })
     }
 
     const planDetails = await Plan.find({
       _id: planId,
-      userId: req.session.user._id,
+      userId: UserId,
     })
 
     if (!planDetails) {
