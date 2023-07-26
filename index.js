@@ -4,7 +4,7 @@ const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const session = require('express-session')
+const session = require('cookie-session')
 const corsOptions = require('./config/corsOptions')
 require('dotenv').config()
 const port = process.env.PORT || 5000
@@ -16,6 +16,7 @@ app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   session({
+    name: 'session',
     key: 'userId',
     secret: process.env.SESSION_SECRET_KEY,
     resave: false,

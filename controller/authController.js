@@ -69,19 +69,20 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-  if (req.session) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(400).json({ message: 'unable to logout' })
-      } else {
-        res.status(200).json({ message: 'logout successfully' })
-      }
-    })
+  if (req.session && Object.keys(req.session).length > 0) {
+    req.session = null
+
+    // Remove the session cookie from the client's browser
+    res.clearCookie('session') // Make sure to replace 'session' with the name of your session cookie
+
+    res.status(200).json({ message: 'logout successfully' })
+  } else {
+    res.status(400).json({ message: 'already logout' })
   }
 }
 
 const cookie = async (req, res) => {
-  if (req.session.user) {
+  if (req.session && Object.keys(req.session).length > 0) {
     res.json({ loggedIn: true, user: req.session.user })
   } else {
     res.json({ loggedIn: false })
