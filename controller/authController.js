@@ -55,16 +55,11 @@ const login = async (req, res) => {
     if (!match) {
       return res.status(400).json({ message: 'Email or password is incorrect' })
     } else {
-      // Set session data
-      req.session.user = {
-        _id: user._id,
-        email: user.email,
-        name: user.name,
-      }
-
+      req.session.user = user
       res.status(200).json({
-        message: 'Login Successful',
-        user: req.session.user,
+        message: 'Login Successfull',
+
+        user: user,
       })
     }
   } catch (err) {
@@ -77,23 +72,19 @@ const logout = async (req, res) => {
   if (req.session) {
     req.session.destroy((err) => {
       if (err) {
-        console.error('Error destroying session:', err)
+        res.status(400).json({ message: 'unable to logout' })
+      } else {
+        res.status(200).json({ message: 'logout successfully' })
       }
-
-      res.clearCookie('session')
-      res.status(200).json({ message: 'Logout successfully' })
     })
-  } else {
-    res.status(400).json({ message: 'Already logged out' })
   }
 }
 
 const cookie = async (req, res) => {
-  if (req.session && req.session.user) {
+  if (req.session.user) {
     res.json({ loggedIn: true, user: req.session.user })
   } else {
     res.json({ loggedIn: false })
   }
 }
-
 module.exports = { register, login, logout, cookie }
