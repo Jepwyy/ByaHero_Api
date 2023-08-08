@@ -4,7 +4,6 @@ const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const session = require('cookie-session')
 
 const corsOptions = require('./config/corsOptions')
 require('dotenv').config()
@@ -15,17 +14,6 @@ app.use(express.json())
 app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(
-  session({
-    key: 'userId',
-    secret: process.env.SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
-  })
-)
 
 //connection
 const uri = process.env.ATLAS_URI

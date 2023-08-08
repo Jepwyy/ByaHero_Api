@@ -1,6 +1,6 @@
 const Users = require('../model/authModel')
 const bcrypt = require('bcryptjs')
-
+const jwt = require('jsonwebtoken')
 const register = async (req, res) => {
   const { email, name, password } = req.body
 
@@ -55,10 +55,14 @@ const login = async (req, res) => {
     if (!match) {
       return res.status(400).json({ message: 'Email or password is incorrect' })
     } else {
-      req.session.user = user
+      const token = jwt.sign({ user: user }, process.env.SECRET_KEY, {
+        expiresIn: 60 * 60 * 24 * 30 * 1000,
+      })
+
+      res.cookie('access-token', token)
       res.status(200).json({
         message: 'Login Successfull',
-
+        auth: true,
         user: user,
       })
     }
@@ -69,22 +73,37 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-  if (req.session) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(400).json({ message: 'unable to logout' })
-      } else {
-        res.status(200).json({ message: 'logout successfully' })
-      }
+  const token = req.cookies['access-token']
+  if (token) {
+    res.clearCookie('access-token')
+    res.status(200).json({
+      message: 'Logout Successfull',
+    })
+  } else {
+    res.status(200).json({
+      message: 'Already Logout',
     })
   }
 }
 
 const cookie = async (req, res) => {
-  if (req.session.user) {
-    res.json({ loggedIn: true, user: req.session.user })
+  const token = req.cookies['access-token']
+  if (!token) {
+    res.json({ auth: false, message: 'Invalid Token' })
   } else {
-    res.json({ loggedIn: false })
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) {
+        res.json({ auth: false, message: 'Authentication Failed!' })
+      } else {
+        req.user = decoded.user
+        const user = req.user
+        res.json({
+          message: 'Authenticated Successfully!',
+          auth: true,
+          user: user,
+        })
+      }
+    })
   }
 }
 module.exports = { register, login, logout, cookie }
