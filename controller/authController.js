@@ -56,10 +56,14 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Email or password is incorrect' })
     } else {
       const token = jwt.sign({ user: user }, process.env.SECRET_KEY, {
-        expiresIn: 60 * 60 * 24 * 30 * 1000,
+        expiresIn: '30d',
       })
 
-      res.cookie('access-token', token)
+      res.cookie('access-token', token, {
+        sameSite: 'none',
+        httpOnly: true,
+        secure: true,
+      })
       res.status(200).json({
         message: 'Login Successfull',
         auth: true,
